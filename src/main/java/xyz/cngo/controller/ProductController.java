@@ -5,7 +5,7 @@ import xyz.cngo.common.checker.ParamCheck;
 import xyz.cngo.common.error.BusinessException;
 import xyz.cngo.common.error.EmBusinessError;
 import xyz.cngo.common.response.CommonReturnType;
-import xyz.cngo.common.utils.EmailUtil;
+import xyz.cngo.dto.ProductUpdateInfoDTO;
 import xyz.cngo.model.ProductModel;
 import xyz.cngo.model.UserModel;
 import xyz.cngo.service.ProductService;
@@ -161,19 +161,13 @@ public class ProductController extends BaseController{
            @RequestParam(name="productId") @ParamCheck(name = "商品ID", min = 1) Integer productId,
            @RequestParam(name="title") @ParamCheck(name = "商品名称", minLength = 3) String title,
            @RequestParam(name="desc") @ParamCheck(name = "商品描述", minLength = 20, maxLength = 1000) String description,
-           @RequestParam(name="price") @ParamCheck(name = "商品价格", min = 0) BigDecimal price,
+           @RequestParam(name="price") @ParamCheck(name = "商品价格", min = 0.01) BigDecimal price,
            @RequestParam(name="images") @ParamCheck(name = "商品图片链接", regex = BaseController.IMAGE_LINK_REGEX) String images,
            @RequestParam(name="status") @ParamCheck(name = "商品状态", regex = BaseController.PRODUCT_STATUS_REGEX) String status
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
-        Map<String, Object> map  = Map.of(
-                "title", title,
-                "description", description,
-                "price", price,
-                "images", images,
-                "status", status
-        );
-        productService.updateProduct(userModel, productId, map);
+        ProductUpdateInfoDTO dto = new ProductUpdateInfoDTO(productId, title, description, price, images, status);
+        productService.updateProduct(userModel, dto);
         return CommonReturnType.create(true);
     }
 

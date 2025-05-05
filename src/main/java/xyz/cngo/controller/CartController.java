@@ -2,6 +2,7 @@ package xyz.cngo.controller;
 
 
 import org.springframework.web.bind.annotation.*;
+import xyz.cngo.common.checker.ParamCheck;
 import xyz.cngo.common.error.BusinessException;
 import xyz.cngo.common.response.CommonReturnType;
 import xyz.cngo.model.CartItemModel;
@@ -43,8 +44,8 @@ public class CartController extends BaseController{
      */
     @PostMapping("/add")
     public CommonReturnType addCartItem(
-            @RequestParam(name="productId") Integer productId,
-            @RequestParam(name="quantity") Integer quantity
+            @RequestParam(name="productId") @ParamCheck(name = "商品ID", min = 1) Integer productId,
+            @RequestParam(name="quantity") @ParamCheck(name = "购买数量", min = 1) Integer quantity
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
         cartService.addCartItem(userModel, productId, quantity);
@@ -59,13 +60,20 @@ public class CartController extends BaseController{
      */
     @DeleteMapping("/remove")
     public CommonReturnType removeCartItem(
-            @RequestParam("productId") Integer productId
+            @RequestParam("productId") @ParamCheck(name = "商品ID", min = 1) Integer productId
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
         cartService.removeCartItem(userModel, productId);
         return CommonReturnType.create(true);
     }
 
+    /**
+     * 从购物车移除多个商品
+     * paramcheck无法校验这种的参数
+     * @param productIds
+     * @return
+     * @throws BusinessException
+     */
     @DeleteMapping("/removeList")
     public CommonReturnType removeCartItems(
             @RequestParam("productIds[]") List<Integer> productIds
@@ -79,8 +87,8 @@ public class CartController extends BaseController{
 
     @PutMapping("/update")
     public CommonReturnType updateCartItem(
-            @RequestParam("productId") Integer productId,
-            @RequestParam("quantity") Integer quantity
+            @RequestParam("productId") @ParamCheck(name = "商品ID", min = 1) Integer productId,
+            @RequestParam("quantity") @ParamCheck(name = "购买数量", min = 1) Integer quantity
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
         cartService.updateCartItem(userModel, productId, quantity);

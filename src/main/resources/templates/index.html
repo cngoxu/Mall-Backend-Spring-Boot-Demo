@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${projectName}">秒杀商城</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .api-list { list-style-type: none; padding: 0; }
+        .api-list li { padding: 8px 0; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+<h1 th:text="${projectName} + ' API 介绍'">秒杀商城 API 介绍</h1>
+
+<div class="info">
+    <p><strong>版本:</strong> <span th:text="${version}">1.0</span></p>
+    <p th:text="${description}">项目描述...</p>
+</div>
+
+<h2>可用API</h2>
+<ul class="api-list">
+    <li th:each="api : ${apis}" th:text="${api}">API描述</li>
+</ul>
+</body>
+</html>

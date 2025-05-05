@@ -8,6 +8,8 @@ public enum EmBusinessError implements CommonError {
     DATABASE_OPERATION_FAILED(15002, "数据库操作失败"),
     TRANSACTION_FAILED(15003, "事务处理异常"),
     EMAIL_SEND_FAILED(15004, "邮件发送失败"),
+    VERIFICATION_CODE_EXPIRED(15005, "验证码已过期"),
+    VERIFICATION_CODE_ERROR(15006, "短信验证码不正确"),
 
     // 用户相关
     USER_NOT_EXIST(20001, "用户不存在"),

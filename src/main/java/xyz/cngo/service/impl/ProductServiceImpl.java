@@ -10,6 +10,7 @@ import xyz.cngo.common.utils.GenerateUtil;
 import xyz.cngo.dao.ProductMapper;
 import xyz.cngo.dao.ProductStockLogMapper;
 import xyz.cngo.dao.ProductStockMapper;
+import xyz.cngo.dto.ProductUpdateInfoDTO;
 import xyz.cngo.entity.ProductEntity;
 import xyz.cngo.entity.ProductStockEntity;
 import xyz.cngo.entity.ProductStockLogEntity;
@@ -163,7 +164,7 @@ public class ProductServiceImpl implements ProductService {
         insertProductStockLog(productEntity.getProductId(),
                 productStockEntity.getStock(),
                 productStockEntity.getStock(),
-                "in",
+                "set",
                 null,
                 String.format("商品%s初始库存", productModel.getTitle()));
 
@@ -174,21 +175,21 @@ public class ProductServiceImpl implements ProductService {
      * 更新商品信息服务函数，这里不会更新库存
      * 不允许更改所属的用户！！！
      * @param userModel
-     * @param productId
-     * @param newProductInfo
+     * @param dto
      * @throws BusinessException
      */
     @Transactional
     @Override
-    public void updateProduct(UserModel userModel, Integer productId, Map<String, Object> newProductInfo) throws BusinessException {
-        ProductEntity productEntity = verifyProductOwnership(userModel, productId);
+    public void updateProduct(UserModel userModel, ProductUpdateInfoDTO dto) throws BusinessException {
+        // 先验证该商品是否属于用户
+        ProductEntity productEntity = verifyProductOwnership(userModel, dto.getProductId());
 
         // 更新商品信息
-        productEntity.setDescription(newProductInfo.get("description").toString());
-        productEntity.setTitle(newProductInfo.get("title").toString());
-        productEntity.setPrice((BigDecimal) newProductInfo.get("price"));
-        productEntity.setImages(newProductInfo.get("images").toString());
-        productEntity.setStatus(newProductInfo.get("status").toString());
+        productEntity.setDescription(dto.getDescription());
+        productEntity.setTitle(dto.getTitle());
+        productEntity.setPrice(dto.getPrice());
+        productEntity.setImages(dto.getImages());
+        productEntity.setStatus(dto.getStatus());
         productMapper.updateById(productEntity);
     }
 
@@ -202,6 +203,9 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public void updateProductStock(UserModel userModel, Integer productId, Integer newStock) throws BusinessException {
+        // 先验证该商品是否属于用户
+        ProductEntity productEntity = verifyProductOwnership(userModel, productId);
+
         ProductStockEntity productStockEntity = new ProductStockEntity();
         productStockEntity.setProductId(productId);
         productStockEntity.setStock(newStock);
@@ -214,7 +218,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 直接增加库存，或者由于退货返回库存
+     * 由于退货返回库存，所以不需要校验用户身份
      * @param productId
      * @param stock
      * @param remark
@@ -254,7 +258,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 根据订单减库存，或者直接减
+     * 根据订单减库存
+     * 根据订单减库存，所以不需要验证用户
      * @param productId
      * @param stock
      * @param remark

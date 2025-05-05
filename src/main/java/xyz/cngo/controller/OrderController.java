@@ -1,9 +1,7 @@
 package xyz.cngo.controller;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.var;
 import org.springframework.web.bind.annotation.*;
+import xyz.cngo.common.checker.ParamCheck;
 import xyz.cngo.common.error.BusinessException;
 import xyz.cngo.common.response.CommonReturnType;
 import xyz.cngo.model.OrderModel;
@@ -13,7 +11,6 @@ import xyz.cngo.service.UserService;
 import xyz.cngo.viewobject.OrderVO;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +25,7 @@ public class OrderController extends BaseController {
 
     @GetMapping("/get")
     public CommonReturnType getOrder(
-            @RequestParam("orderId") String orderId
+            @RequestParam("orderId") @ParamCheck(name = "订单ID", minLength = 20, maxLength = 20) String orderId
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
         OrderModel orderModel = orderService.getOrder(userModel, orderId);
@@ -47,8 +44,8 @@ public class OrderController extends BaseController {
 
     @PostMapping("/create")
     public CommonReturnType createOrder(
-            @RequestParam("productId") Integer productId,
-            @RequestParam("quantity") Integer quantity
+            @RequestParam("productId") @ParamCheck(name = "商品ID", min = 1) Integer productId,
+            @RequestParam("quantity") @ParamCheck(name = "购买数量", min = 1) Integer quantity
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
         OrderModel orderModel = orderService.createOrder(userModel, productId, quantity);
@@ -57,7 +54,7 @@ public class OrderController extends BaseController {
 
     @PutMapping("/pay")
     public CommonReturnType payOrder(
-            @RequestParam("orderId") String orderId
+            @RequestParam("orderId") @ParamCheck(name = "订单ID", minLength = 20, maxLength = 20) String orderId
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
         OrderModel orderModel = orderService.payOrder(userModel, orderId);
@@ -66,7 +63,7 @@ public class OrderController extends BaseController {
 
     @PutMapping("/update")
     public CommonReturnType updateOrder(
-            @RequestParam("orderId") String orderId
+            @RequestParam("orderId") @ParamCheck(name = "订单ID", minLength = 20, maxLength = 20) String orderId
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
         OrderModel orderModel = orderService.updateOrderStatus(userModel, orderId);
@@ -75,7 +72,7 @@ public class OrderController extends BaseController {
 
     @PutMapping("/cancel")
     public CommonReturnType cancelOrder(
-            @RequestParam("orderId") String orderId
+            @RequestParam("orderId") @ParamCheck(name = "订单ID", minLength = 20, maxLength = 20) String orderId
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
         OrderModel orderModel = orderService.cancelOrder(userModel, orderId);
@@ -84,7 +81,7 @@ public class OrderController extends BaseController {
 
     @PutMapping("/refund")
     public CommonReturnType refundOrder(
-            @RequestParam("orderId") String orderId
+            @RequestParam("orderId") @ParamCheck(name = "订单ID", minLength = 20, maxLength = 20) String orderId
     ) throws BusinessException {
         UserModel userModel = userService.getCurrentLoggedInUser();
         OrderModel orderModel = orderService.refundOrder(userModel, orderId);

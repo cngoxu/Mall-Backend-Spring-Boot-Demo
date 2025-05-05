@@ -6,6 +6,7 @@ import xyz.cngo.common.checker.ParamCheck;
 import xyz.cngo.common.error.BusinessException;
 import xyz.cngo.common.error.EmBusinessError;
 import xyz.cngo.common.response.CommonReturnType;
+import xyz.cngo.common.utils.DateTimeUtil;
 import xyz.cngo.common.utils.EmailUtil;
 import xyz.cngo.common.utils.GenerateUtil;
 import xyz.cngo.common.utils.PasswordUtil;
@@ -17,8 +18,6 @@ import xyz.cngo.viewobject.UserInfoVO;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -206,10 +205,8 @@ public class UserController extends BaseController{
         }
         // 这步本来应该在service中调用
         String code = GenerateUtil.generateVerificationCode();
-
         // 获取当前时间
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currentTime = dateFormat.format(new Date());
+        String currentTime = DateTimeUtil.getNowTimeStr();
 
         // 验证码和session绑定
         httpServletRequest.getSession().setAttribute("VerificationCode", code);
@@ -237,11 +234,22 @@ public class UserController extends BaseController{
         return CommonReturnType.create(Map.of("verificationCode", code, "createTime", time));
     }
 
+    /**
+     * 校验验证码的有效性
+     * @param veridationCode
+     * @throws BusinessException
+     */
     private void checkVeridationCode(String veridationCode) throws BusinessException {
         String insessionVeridationCode = (String) httpServletRequest.getSession().getAttribute("VerificationCode");
+        String createTimeStr = (String) httpServletRequest.getSession().getAttribute("currentTime");
+
+        if(DateTimeUtil.isVerficationCodeExpired(createTimeStr)){
+            throw new BusinessException(EmBusinessError.VERIFICATION_CODE_EXPIRED);
+        }
+
         if(Objects.isNull(insessionVeridationCode) ||
                 !insessionVeridationCode.equals(veridationCode)){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "短信验证码不正确");
+            throw new BusinessException(EmBusinessError.VERIFICATION_CODE_ERROR);
         }
     }
 }

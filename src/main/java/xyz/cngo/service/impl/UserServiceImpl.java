@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 更新或者插入用户密码记录
+     * 私有方法，更新或者插入用户密码记录
      * @param userEntity
      * @param newPassword
      * @return
