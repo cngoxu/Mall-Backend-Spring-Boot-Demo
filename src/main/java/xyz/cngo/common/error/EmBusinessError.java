@@ -20,7 +20,7 @@ public enum EmBusinessError implements CommonError {
 
     // 商品相关
     PRODUCT_STOCK_NOT_ENOUGH(30001, "商品库存不足"),
-    PRODUCT_NOT_EXIST(30002, "商品不存在"),
+    PRODUCT_NOT_EXIST(30002, "商品不存在或者已被删除"),
     PRODUCT_OFF_SHELF(30003, "商品已下架"),
     PRODUCT_OUT_OF_STOCK(30005, "商品已售罄"),
     PRODUCT_NOT_OWNED_BY_USER(30007, "商品不属于该用户"),

@@ -15,7 +15,7 @@ public interface ProductService {
 
     List<ProductModel> getUserProducts(UserModel userModel);
 
-    ProductModel getProductById(Integer productId);
+    ProductModel getProductById(Integer productId) throws BusinessException;
 
     void deleteProduct(UserModel userModel, Integer productId) throws BusinessException;
 

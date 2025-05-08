@@ -26,6 +26,6 @@ custom:
   cart:
     max_capacity: 5
   email:
-    resend-api: ${RESEND_API}
+    resend-api: ${RESEND_API:re}
     from: ${FROM_EMAIL:cngo<no-reply@cngo.cloudns.nz>}
 

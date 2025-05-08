@@ -86,7 +86,7 @@ public class ProductController extends BaseController{
     @GetMapping("/view")
     public CommonReturnType viewProduct(
             @RequestParam("productId") @ParamCheck(name = "商品ID", min = 1) Integer productId
-    ){
+    ) throws BusinessException {
         ProductModel productModel = productService.getProductById(productId);
         ProductVO productVO = ProductVO.convertFromModel(productModel);
         return CommonReturnType.create(productVO);
@@ -181,9 +181,6 @@ public class ProductController extends BaseController{
     public CommonReturnType removeProduct(
             @RequestParam("productId") @ParamCheck(name = "商品ID", min = 1) Integer productId
     ) throws BusinessException {
-        if(Objects.isNull(productId)){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
-        }
         UserModel userModel = userService.getCurrentLoggedInUser();
         productService.deleteProduct(userModel, productId);
         return CommonReturnType.create(null);

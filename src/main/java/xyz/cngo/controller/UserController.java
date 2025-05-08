@@ -85,9 +85,6 @@ public class UserController extends BaseController{
             @RequestParam(name="email") @ParamCheck(name = "邮箱", regex = BaseController.EMAIL_REGEX) String email,
             @RequestParam(name="password") @ParamCheck(name = "密码", minLength = 6, maxLength = 18) String password
     ) throws BusinessException {
-        if(StringUtils.isEmpty(email) || StringUtils.isEmpty(password)){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
-        }
         //用户登陆服务，用来校验用户登陆是否合法
         UserModel userModel = userService.validateLoginCredentials(email, password);
 
@@ -216,7 +213,7 @@ public class UserController extends BaseController{
         httpServletResponse.addHeader("Set-Cookie", cookieValue);
 
         // 这步本来也该在service中调用
-        EmailUtil.sendVerificationCode(email, code, currentTime);
+//        EmailUtil.sendVerificationCode(email, code, currentTime);
         System.out.println(email + "=>" + code);
         return CommonReturnType.create(true);
     }

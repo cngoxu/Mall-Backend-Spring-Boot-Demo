@@ -88,8 +88,11 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
-    public ProductModel getProductById(Integer productId) {
+    public ProductModel getProductById(Integer productId) throws BusinessException {
         ProductEntity productEntity = productMapper.selectById(productId);
+        if(Objects.isNull(productEntity)){
+            throw new BusinessException(EmBusinessError.PRODUCT_NOT_EXIST);
+        }
         ProductStockEntity productStockEntity = getProductStockEntityById(productId);
         return ProductModel.convertFromEntity(productEntity, productStockEntity);
     }
@@ -114,6 +117,8 @@ public class ProductServiceImpl implements ProductService {
             throw new BusinessException(EmBusinessError.PRODUCT_NOT_OWNED_BY_USER);
         }
 
+        /* 外键约束会自动删除
+
         // 删除库存表
         QueryWrapper<ProductStockEntity> qwStock = new QueryWrapper<>();
         qwStock.eq("product_id", productId);
@@ -123,6 +128,7 @@ public class ProductServiceImpl implements ProductService {
         QueryWrapper<ProductStockLogEntity> qwStockLog = new QueryWrapper<>();
         qwStockLog.eq("product_id", productId);
         productStockLogMapper.delete(qwStockLog);
+        */
     }
 
     /**
