@@ -37,4 +37,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### 自定义环境变量
+.env
+
+### 测试代码文件夹
 src/test/

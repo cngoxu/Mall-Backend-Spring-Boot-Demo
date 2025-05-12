@@ -2,6 +2,8 @@ server:
   port: ${LEANCLOUD_APP_PORT:8088}
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
@@ -26,6 +28,6 @@ custom:
   cart:
     max_capacity: 5
   email:
-    resend-api: ${RESEND_API:re}
+    resend-api: ${RESEND_API:re_XXXXXXXX}
     from: ${FROM_EMAIL:cngo<no-reply@cngo.cloudns.nz>}
 

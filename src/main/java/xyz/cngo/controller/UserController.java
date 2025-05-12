@@ -213,7 +213,7 @@ public class UserController extends BaseController{
         httpServletResponse.addHeader("Set-Cookie", cookieValue);
 
         // 这步本来也该在service中调用
-//        EmailUtil.sendVerificationCode(email, code, currentTime);
+        EmailUtil.sendVerificationCode(email, code, currentTime);
         System.out.println(email + "=>" + code);
         return CommonReturnType.create(true);
     }
