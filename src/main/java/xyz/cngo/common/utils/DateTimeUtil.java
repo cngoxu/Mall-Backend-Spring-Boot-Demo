@@ -2,6 +2,7 @@ package xyz.cngo.common.utils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -26,6 +27,6 @@ public class DateTimeUtil {
     }
 
     public static String getNowTimeStr(){
-        return LocalDateTime.now().format(FORMATTER);
+        return LocalDateTime.now(ZoneOffset.of("+8")).format(FORMATTER);
     }
 }

@@ -120,9 +120,19 @@ public class OrderServiceImpl implements OrderService {
         if(!orderEntity.getStatus().equals("pending")){
             throw new BusinessException(EmBusinessError.ORDER_ALREADY_PAID);
         }
-        OrderEntity payedOrderEntity = payOrderEntity(userModel, orderEntity);
-        orderMapper.updateById(payedOrderEntity);
-        return OrderModel.convertFromEntity(payedOrderEntity);
+
+        // 尝试减少商品库存，若库存不足，内部会报错
+        productService.reduceProductStock(
+                orderEntity.getProductId(),
+                orderEntity.getQuantity(),
+                "用户购买"+orderEntity.getQuantity()+"件商品",
+                orderEntity.getOrderId());
+
+        balanceService.consumeBalance(userModel, OrderModel.convertFromEntity(orderEntity));
+        orderEntity.setStatus("paid");
+
+        orderMapper.updateById(orderEntity);
+        return OrderModel.convertFromEntity(orderEntity);
     }
 
     /**
@@ -231,39 +241,6 @@ public class OrderServiceImpl implements OrderService {
         if(!orderEntity.getUserId().equals(userModel.getUserId())){
             throw new BusinessException(EmBusinessError.ORDER_NOT_OWNED_BY_USER);
         }
-        return orderEntity;
-    }
-
-    /**
-     * 创建新的订单实体并进行相应检查，然后返回
-     * @param userModel
-     * @param productId
-     * @param quantity
-     * @return
-     * @throws BusinessException
-     */
-    private OrderEntity createOrderEntity(UserModel userModel, Integer productId, Integer quantity) throws BusinessException {
-        return null;
-    }
-
-    /**
-     * 对未支付的订单实体进行扣减库存和支付的操作，然后返回实体
-     * @param userModel
-     * @param orderEntity
-     * @return
-     * @throws BusinessException
-     */
-    private OrderEntity payOrderEntity(UserModel userModel, OrderEntity orderEntity) throws BusinessException {
-        // 尝试减少商品库存，若库存不足，内部会报错
-        productService.reduceProductStock(
-                orderEntity.getProductId(),
-                orderEntity.getQuantity(),
-                "用户购买"+orderEntity.getQuantity()+"件商品",
-                orderEntity.getOrderId());
-
-        balanceService.consumeBalance(userModel, OrderModel.convertFromEntity(orderEntity));
-        orderEntity.setStatus("paid");
-
         return orderEntity;
     }
 }

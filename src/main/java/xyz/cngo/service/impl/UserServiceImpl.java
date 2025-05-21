@@ -83,6 +83,7 @@ public class UserServiceImpl implements UserService {
      * @param userUpdateProfileDTO
      * @return
      */
+    @Transactional
     @Override
     public UserModel updateUserProfile(UserModel userModel, UserUpdateProfileDTO userUpdateProfileDTO) {
         // 更新用户模型信息
@@ -104,6 +105,7 @@ public class UserServiceImpl implements UserService {
      * @return
      * @throws BusinessException
      */
+    @Transactional
     @Override
     public UserModel resetUserPassword(String email, String newPassword) throws BusinessException {
         UserEntity userEntity = getUserEntityByEmail(email);
@@ -122,6 +124,7 @@ public class UserServiceImpl implements UserService {
      * @return
      * @throws BusinessException
      */
+    @Transactional
     @Override
     public UserModel updateUserPassword(UserModel userModel, String oldPassword, String newPassword) throws BusinessException {
         if(!PasswordUtil.verifyPassword(oldPassword, userModel.getPassword())){

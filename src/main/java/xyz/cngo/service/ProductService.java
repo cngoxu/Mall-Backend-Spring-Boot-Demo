@@ -21,7 +21,6 @@ public interface ProductService {
 
     String publishProduct(UserModel userModel, Integer productId, String status)  throws BusinessException;
 
-    @Transactional
     ProductModel createProduct(ProductModel productModel) throws BusinessException;
 
     void updateProduct(UserModel userModel, ProductUpdateInfoDTO dto) throws BusinessException;

@@ -3,6 +3,7 @@ package xyz.cngo.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.cngo.common.error.BusinessException;
 import xyz.cngo.common.error.EmBusinessError;
@@ -20,7 +21,6 @@ import xyz.cngo.model.UserModel;
 import xyz.cngo.service.ProductService;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -232,7 +232,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      * @throws BusinessException
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public ProductStockModel addProductStock(Integer productId, Integer stock, String remark, String orderId) throws BusinessException {
         // 获取商品库存
@@ -272,7 +272,7 @@ public class ProductServiceImpl implements ProductService {
      * @param orderId
      * @throws BusinessException
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public ProductStockModel reduceProductStock(Integer productId, Integer stock, String remark, String orderId) throws BusinessException {
         // 获取商品库存

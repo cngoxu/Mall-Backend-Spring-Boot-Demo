@@ -2,7 +2,7 @@ package xyz.cngo.common.error;
 
 import java.util.Objects;
 
-public class BusinessException extends Exception implements CommonError {
+public class BusinessException extends RuntimeException implements CommonError {
     private final CommonError error;
     private final String message;   // 可选的自定义消息
 

@@ -2,8 +2,8 @@ package xyz.cngo.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import xyz.cngo.common.error.BusinessException;
 import xyz.cngo.common.error.EmBusinessError;
 import xyz.cngo.common.utils.GenerateUtil;
@@ -11,7 +11,6 @@ import xyz.cngo.dao.BalanceLogMapper;
 import xyz.cngo.dao.BalanceMapper;
 import xyz.cngo.entity.BalanceEntity;
 import xyz.cngo.entity.BalanceLogEntity;
-import xyz.cngo.entity.OrderEntity;
 import xyz.cngo.model.BalanceLogModel;
 import xyz.cngo.model.BalanceModel;
 import xyz.cngo.model.OrderModel;
@@ -53,7 +52,7 @@ public class BalanceServiceImpl implements BalanceService {
      */
     @Override
     public List<BalanceLogModel> getBalanceLogs(UserModel userModel, Integer page, Integer limit) {
-        Integer offset = (page - 1) * limit;
+        int offset = (page - 1) * limit;
         QueryWrapper<BalanceLogEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userModel.getUserId());
         queryWrapper.orderByDesc("created_at"); // 最新优先
@@ -70,7 +69,7 @@ public class BalanceServiceImpl implements BalanceService {
      * @param userModel
      * @param amount
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public BalanceModel rechargeBalance(UserModel userModel, BigDecimal amount) throws BusinessException {
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
@@ -86,7 +85,7 @@ public class BalanceServiceImpl implements BalanceService {
      * @return
      * @throws BusinessException
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public BalanceModel withdrawBalance(UserModel userModel, BigDecimal amount) throws BusinessException {
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
@@ -101,7 +100,7 @@ public class BalanceServiceImpl implements BalanceService {
      * @param orderModel
      * @throws BusinessException
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void consumeBalance(UserModel userModel, OrderModel orderModel) throws BusinessException {
         BalanceModel balanceModel = subBalance(userModel, orderModel.getTotalPrice(), "consume", orderModel);
@@ -113,7 +112,7 @@ public class BalanceServiceImpl implements BalanceService {
      * @param orderModel
      * @throws BusinessException
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void refundBalance(UserModel userModel, OrderModel orderModel) throws BusinessException {
         BalanceModel balanceModel = addBalance(userModel, orderModel.getTotalPrice(), "refund", orderModel);
